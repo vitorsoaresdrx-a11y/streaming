@@ -216,11 +216,11 @@ async function playContent() {
     let embedUrl = "";
 
     if (type === 'movie') {
-        embedUrl = `https://vidsrc.to/embed/movie/${currentMovieId}`;
+        embedUrl = `https://vidsrc.xyz/embed/movie?tmdb=${currentMovieId}`;
     } else {
         const season = document.getElementById('season-select').value || 1;
         const episode = window.currentEpisodeNumber || 1;
-        embedUrl = `https://vidsrc.to/embed/tv/${currentMovieId}/${season}/${episode}`;
+        embedUrl = `https://vidsrc.xyz/embed/tv?tmdb=${currentMovieId}&season=${season}&episode=${episode}`;
     }
 
     videoContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
