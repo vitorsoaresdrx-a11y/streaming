@@ -107,12 +107,26 @@ async function renderRows() {
 // Modal Logic
 const modal = document.getElementById('movie-modal');
 const closeBtn = document.querySelector('.close-btn');
+const videoModal = document.getElementById('video-modal');
+const videoCloseBtn = document.querySelector('.video-close');
+const videoContainer = document.getElementById('video-container');
+const modalPlayBtn = document.querySelector('.modal-play');
+
+let currentMovieId = null;
 
 closeBtn.addEventListener('click', () => {
     modal.classList.remove('active');
     setTimeout(() => {
         modal.style.display = 'none';
-    }, 300); // Wait for transition
+    }, 300);
+});
+
+videoCloseBtn.addEventListener('click', () => {
+    videoModal.classList.remove('active');
+    setTimeout(() => {
+        videoModal.style.display = 'none';
+        videoContainer.innerHTML = '';
+    }, 300);
 });
 
 window.addEventListener('click', (e) => {
@@ -122,9 +136,54 @@ window.addEventListener('click', (e) => {
             modal.style.display = 'none';
         }, 300);
     }
+    if (e.target === videoModal) {
+        videoModal.classList.remove('active');
+        setTimeout(() => {
+            videoModal.style.display = 'none';
+            videoContainer.innerHTML = '';
+        }, 300);
+    }
 });
 
+modalPlayBtn.addEventListener('click', playTrailer);
+
+async function playTrailer() {
+    if (!currentMovieId) return;
+    
+    try {
+        let res = await fetch(`${BASE_URL}/movie/${currentMovieId}/videos?language=pt-BR`, options);
+        let data = await res.json();
+        let videos = data.results;
+        
+        if (!videos || videos.length === 0) {
+            res = await fetch(`${BASE_URL}/movie/${currentMovieId}/videos`, options);
+            data = await res.json();
+            videos = data.results;
+        }
+
+        if (videos && videos.length > 0) {
+            const trailer = videos.find(v => v.type === 'Trailer' && v.site === 'YouTube') || videos.find(v => v.site === 'YouTube');
+            
+            if (trailer) {
+                videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${trailer.key}?autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+                videoModal.style.display = 'block';
+                setTimeout(() => {
+                    videoModal.classList.add('active');
+                }, 10);
+            } else {
+                alert('Trailer não disponível.');
+            }
+        } else {
+            alert('Trailer não disponível.');
+        }
+    } catch (e) {
+        console.error("Error fetching trailer:", e);
+        alert('Erro ao carregar o trailer.');
+    }
+}
+
 async function openModal(movie) {
+    currentMovieId = movie.id;
     const modalHero = document.getElementById('modal-hero');
     const title = document.getElementById('modal-title');
     const rating = document.getElementById('modal-rating');
