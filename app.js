@@ -226,10 +226,9 @@ async function playContent(serverType) {
     });
 
     if (serverType === 'warez') {
-        // SuperVideo - Alternative for Warez
         embedUrl = type === 'movie' 
-            ? `https://supervideo.tv/e/${currentMovieId}`
-            : `https://supervideo.tv/e/${currentMovieId}/${season}/${episode}`;
+            ? `https://embed.warezcdn.com/movie/${currentMovieId}`
+            : `https://embed.warezcdn.com/tv/${currentMovieId}/${season}/${episode}`;
     } else if (serverType === 'embedsu') {
         // Embedder.net - Focado em Dublado
         embedUrl = type === 'movie'
