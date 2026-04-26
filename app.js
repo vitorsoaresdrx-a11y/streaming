@@ -5,11 +5,13 @@ const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/original';
 const IMAGE_POSTER_URL = 'https://image.tmdb.org/t/p/w500';
 
 const endpoints = {
-    trending: `${BASE_URL}/trending/movie/week?language=pt-BR`,
+    trending: `${BASE_URL}/trending/all/week?language=pt-BR`,
     topRated: `${BASE_URL}/movie/top_rated?language=pt-BR`,
     action: `${BASE_URL}/discover/movie?with_genres=28&language=pt-BR`,
     scifi: `${BASE_URL}/discover/movie?with_genres=878&language=pt-BR`,
-    search: `${BASE_URL}/search/movie?language=pt-BR&include_adult=false`
+    search: `${BASE_URL}/search/multi?language=pt-BR&include_adult=false`,
+    tv: `${BASE_URL}/trending/tv/week?language=pt-BR`,
+    movies: `${BASE_URL}/trending/movie/week?language=pt-BR`
 };
 
 const options = {
@@ -210,13 +212,16 @@ modalPlayBtn.addEventListener('click', playTrailer);
 async function playTrailer() {
     if (!currentMovieId) return;
     
+    // Check if the current title is a movie or tv show
+    const type = currentMovieType || 'movie';
+    
     try {
-        let res = await fetch(`${BASE_URL}/movie/${currentMovieId}/videos?language=pt-BR`, options);
+        let res = await fetch(`${BASE_URL}/${type}/${currentMovieId}/videos?language=pt-BR`, options);
         let data = await res.json();
         let videos = data.results;
         
         if (!videos || videos.length === 0) {
-            res = await fetch(`${BASE_URL}/movie/${currentMovieId}/videos`, options);
+            res = await fetch(`${BASE_URL}/${type}/${currentMovieId}/videos`, options);
             data = await res.json();
             videos = data.results;
         }
@@ -242,8 +247,12 @@ async function playTrailer() {
     }
 }
 
+let currentMovieType = 'movie';
+
 async function openModal(movie) {
     currentMovieId = movie.id;
+    currentMovieType = movie.media_type || (movie.first_air_date ? 'tv' : 'movie');
+    
     const modalHero = document.getElementById('modal-hero');
     const title = document.getElementById('modal-title');
     const rating = document.getElementById('modal-rating');
@@ -263,7 +272,7 @@ async function openModal(movie) {
     // Fetch details to get genres
     genresContainer.innerHTML = '';
     try {
-        const res = await fetch(`${BASE_URL}/movie/${movie.id}?language=pt-BR`, options);
+        const res = await fetch(`${BASE_URL}/${currentMovieType}/${movie.id}?language=pt-BR`, options);
         const details = await res.json();
         
         if (details.genres) {
@@ -282,6 +291,70 @@ async function openModal(movie) {
     setTimeout(() => {
         modal.classList.add('active');
     }, 10);
+}
+
+// Navigation Logic
+function showSection(type) {
+    // Update active link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.classList.remove('active');
+        if (link.textContent.toLowerCase() === type.replace('all', 'início').replace('tv', 'séries').replace('movie', 'filmes').replace('trending', 'bombando').replace('mylist', 'minha lista')) {
+            link.classList.add('active');
+        }
+    });
+
+    if (type === 'all') {
+        searchResultsSection.style.display = 'none';
+        document.querySelectorAll('.movie-row').forEach(row => row.style.display = 'block');
+        searchResultsSection.style.display = 'none';
+        return;
+    }
+
+    // Clear search results when switching tabs
+    searchResultsSection.style.display = 'none';
+    
+    // For demo: Filter main rows or load specific content
+    if (type === 'tv' || type === 'movie') {
+        performSearchType(type);
+    }
+}
+
+async function performSearchType(type) {
+    const url = type === 'tv' ? endpoints.tv : endpoints.movies;
+    const movies = await fetchMovies(url);
+    
+    searchQueryTitle.textContent = type === 'tv' ? "Séries Populares" : "Filmes Populares";
+    searchResultsRow.innerHTML = '';
+    
+    movies.forEach(movie => {
+        if (!movie.poster_path) return;
+        const card = createMovieCard(movie);
+        searchResultsRow.appendChild(card);
+    });
+    
+    // Hide original rows and show result row
+    document.querySelectorAll('.movie-row').forEach(row => row.style.display = 'none');
+    searchResultsSection.style.display = 'block';
+}
+
+function createMovieCard(movie) {
+    const card = document.createElement('div');
+    card.className = 'movie-card';
+    card.style.backgroundImage = `url(${IMAGE_POSTER_URL}${movie.poster_path})`;
+    
+    const rating = (movie.vote_average * 10).toFixed(0);
+    
+    card.innerHTML = `
+        <div class="card-info">
+            <div class="card-title">${movie.title || movie.name}</div>
+            <div class="card-rating">
+                <i class="fa-solid fa-star"></i> ${rating}% Match
+            </div>
+        </div>
+    `;
+
+    card.addEventListener('click', () => openModal(movie));
+    return card;
 }
 
 // Initialize App
