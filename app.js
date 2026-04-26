@@ -226,13 +226,15 @@ async function playContent(serverType) {
     });
 
     if (serverType === 'warez') {
+        // SuperVideo - Alternative for Warez
         embedUrl = type === 'movie' 
-            ? `https://embed.warezcdn.top/movie/${currentMovieId}`
-            : `https://embed.warezcdn.top/tv/${currentMovieId}/${season}/${episode}`;
+            ? `https://supervideo.tv/e/${currentMovieId}`
+            : `https://supervideo.tv/e/${currentMovieId}/${season}/${episode}`;
     } else if (serverType === 'embedsu') {
+        // Embedder.net - Focado em Dublado
         embedUrl = type === 'movie'
-            ? `https://embed.su/embed/movie/${currentMovieId}`
-            : `https://embed.su/embed/tv/${currentMovieId}/${season}/${episode}`;
+            ? `https://embedder.net/e/movie?tmdb=${currentMovieId}`
+            : `https://embedder.net/e/tv?tmdb=${currentMovieId}&sea=${season}&epi=${episode}`;
     } else if (serverType === 'super') {
         embedUrl = type === 'movie'
             ? `https://multiembed.mov/?video_id=${currentMovieId}&tmdb=1`
