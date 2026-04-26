@@ -227,8 +227,8 @@ async function playContent(serverType) {
 
     if (serverType === 'warez') {
         embedUrl = type === 'movie' 
-            ? `https://embed.warezcdn.com/movie/${currentMovieId}`
-            : `https://embed.warezcdn.com/tv/${currentMovieId}/${season}/${episode}`;
+            ? `https://embed.warezcdn.site/movie/${currentMovieId}`
+            : `https://embed.warezcdn.site/tv/${currentMovieId}/${season}/${episode}`;
     } else if (serverType === 'embedsu') {
         // Embedder.net - Focado em Dublado
         embedUrl = type === 'movie'
