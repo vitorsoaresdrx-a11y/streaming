@@ -269,7 +269,16 @@ async function openModal(movie) {
     
     overview.textContent = movie.overview || "Nenhuma sinopse disponível.";
 
-    // Fetch details to get genres
+    const seriesDetails = document.getElementById('series-details');
+    const seasonSelect = document.getElementById('season-select');
+    const episodesList = document.getElementById('episodes-list');
+
+    // Reset series specific UI
+    seriesDetails.style.display = 'none';
+    seasonSelect.innerHTML = '';
+    episodesList.innerHTML = '';
+
+    // Fetch details to get genres and seasons if it's a TV show
     genresContainer.innerHTML = '';
     try {
         const res = await fetch(`${BASE_URL}/${currentMovieType}/${movie.id}?language=pt-BR`, options);
@@ -283,6 +292,28 @@ async function openModal(movie) {
                 genresContainer.appendChild(span);
             });
         }
+
+        // Handle Series Seasons
+        if (currentMovieType === 'tv' && details.seasons) {
+            seriesDetails.style.display = 'block';
+            
+            details.seasons.forEach(season => {
+                // Skip special seasons (usually index 0)
+                if (season.season_number === 0 && details.seasons.length > 1) return;
+                
+                const option = document.createElement('option');
+                option.value = season.season_number;
+                option.textContent = season.name;
+                seasonSelect.appendChild(option);
+            });
+
+            seasonSelect.onchange = () => loadEpisodes(movie.id, seasonSelect.value);
+            
+            // Load first season by default
+            if (seasonSelect.options.length > 0) {
+                loadEpisodes(movie.id, seasonSelect.options[0].value);
+            }
+        }
     } catch (e) {
         console.log("Could not fetch details", e);
     }
@@ -291,6 +322,48 @@ async function openModal(movie) {
     setTimeout(() => {
         modal.classList.add('active');
     }, 10);
+}
+
+async function loadEpisodes(seriesId, seasonNumber) {
+    const episodesList = document.getElementById('episodes-list');
+    episodesList.innerHTML = '<p style="padding: 20px; color: var(--text-secondary);">Carregando episódios...</p>';
+    
+    try {
+        const res = await fetch(`${BASE_URL}/tv/${seriesId}/season/${seasonNumber}?language=pt-BR`, options);
+        const data = await res.json();
+        
+        episodesList.innerHTML = '';
+        
+        if (data.episodes) {
+            data.episodes.forEach(episode => {
+                const epItem = document.createElement('div');
+                epItem.className = 'episode-item';
+                
+                const thumb = episode.still_path 
+                    ? `https://image.tmdb.org/t/p/w300${episode.still_path}` 
+                    : `https://via.placeholder.com/120x68/141414/ffffff?text=Ep+${episode.episode_number}`;
+
+                epItem.innerHTML = `
+                    <div class="episode-thumb" style="background-image: url(${thumb})"></div>
+                    <div class="episode-info">
+                        <div class="episode-title">${episode.episode_number}. ${episode.name}</div>
+                        <div class="episode-overview">${episode.overview || 'Sem descrição disponível.'}</div>
+                    </div>
+                `;
+
+                epItem.onclick = () => {
+                    // Logic to play specific episode trailer/video if available
+                    // For now, let's just trigger the main trailer play logic
+                    playTrailer();
+                };
+                
+                episodesList.appendChild(epItem);
+            });
+        }
+    } catch (e) {
+        console.error("Error loading episodes:", e);
+        episodesList.innerHTML = '<p style="padding: 20px; color: #ff4444;">Erro ao carregar episódios.</p>';
+    }
 }
 
 // Navigation Logic
