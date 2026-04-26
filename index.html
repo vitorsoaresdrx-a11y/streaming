@@ -140,6 +140,11 @@
     <div class="modal" id="video-modal">
         <div class="modal-content video-content">
             <span class="close-btn video-close">&times;</span>
+            <div class="server-bar">
+                <button class="server-btn active" onclick="changeServer('warez')">Servidor 1 (Dublado)</button>
+                <button class="server-btn" onclick="changeServer('embedsu')">Servidor 2 (Dublado)</button>
+                <button class="server-btn" onclick="changeServer('vidsrc')">Servidor 3 (Legenda)</button>
+            </div>
             <div class="video-container" id="video-container">
                 <!-- iframe will be inserted here -->
             </div>

@@ -207,20 +207,36 @@ window.addEventListener('click', (e) => {
     }
 });
 
-modalPlayBtn.addEventListener('click', playContent);
+modalPlayBtn.addEventListener('click', () => playContent('warez'));
 
-async function playContent() {
+async function playContent(serverType) {
     if (!currentMovieId) return;
     
     const type = currentMovieType || 'movie';
     let embedUrl = "";
+    const season = document.getElementById('season-select').value || 1;
+    const episode = window.currentEpisodeNumber || 1;
 
-    if (type === 'movie') {
-        embedUrl = `https://vidsrc.xyz/embed/movie?tmdb=${currentMovieId}`;
-    } else {
-        const season = document.getElementById('season-select').value || 1;
-        const episode = window.currentEpisodeNumber || 1;
-        embedUrl = `https://vidsrc.xyz/embed/tv?tmdb=${currentMovieId}&season=${season}&episode=${episode}`;
+    // Update active button state
+    document.querySelectorAll('.server-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick').includes(serverType)) {
+            btn.classList.add('active');
+        }
+    });
+
+    if (serverType === 'warez') {
+        embedUrl = type === 'movie' 
+            ? `https://embed.warezcdn.com/movie/${currentMovieId}`
+            : `https://embed.warezcdn.com/tv/${currentMovieId}/${season}/${episode}`;
+    } else if (serverType === 'embedsu') {
+        embedUrl = type === 'movie'
+            ? `https://embed.su/embed/movie/${currentMovieId}`
+            : `https://embed.su/embed/tv/${currentMovieId}/${season}/${episode}`;
+    } else if (serverType === 'vidsrc') {
+        embedUrl = type === 'movie'
+            ? `https://vidsrc.me/embed/movie?tmdb=${currentMovieId}&lang=pt`
+            : `https://vidsrc.me/embed/tv?tmdb=${currentMovieId}&season=${season}&episode=${episode}&lang=pt`;
     }
 
     videoContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
@@ -229,6 +245,11 @@ async function playContent() {
         videoModal.classList.add('active');
     }, 10);
 }
+
+// Global function for the buttons in HTML
+window.changeServer = (serverType) => {
+    playContent(serverType);
+};
 
 let currentMovieType = 'movie';
 
