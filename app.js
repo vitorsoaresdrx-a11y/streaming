@@ -245,7 +245,17 @@ async function playContent(serverType) {
             : `https://vidsrc.me/embed/tv?tmdb=${currentMovieId}&season=${season}&episode=${episode}&lang=pt`;
     }
 
-    videoContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+    // Fix for black screen: ensure all permissions are granted to the iframe
+    videoContainer.innerHTML = `
+        <iframe 
+            src="${embedUrl}" 
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture" 
+            allowfullscreen 
+            frameborder="0" 
+            referrerpolicy="no-referrer"
+            style="width: 100%; height: 100%; border: none;">
+        </iframe>`;
+    
     videoModal.style.display = 'block';
     setTimeout(() => {
         videoModal.classList.add('active');
