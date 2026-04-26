@@ -23,9 +23,12 @@
             <li><a href="#">Minha Lista</a></li>
         </ul>
         <div class="nav-actions">
-            <button class="icon-btn"><i class="fa-solid fa-search"></i></button>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Títulos, pessoas, gêneros...">
+                <button class="icon-btn" id="search-btn"><i class="fa-solid fa-search"></i></button>
+            </div>
             <button class="icon-btn"><i class="fa-solid fa-bell"></i></button>
-            <div class="avatar"><img src="https://ui-avatars.com/api/?name=User&background=6C5CE7&color=fff" alt="User"></div>
+            <div class="avatar"><img src="https://ui-avatars.com/api/?name=User&background=E50914&color=fff" alt="User"></div>
         </div>
     </nav>
 
@@ -43,6 +46,14 @@
     </header>
 
     <main class="content">
+        <!-- Search Results Section -->
+        <section class="movie-row" id="search-results-section" style="display: none;">
+            <h2 id="search-query-title">Resultados para ""</h2>
+            <div class="row-container results-grid" id="search-results-row">
+                <!-- Search results will appear here -->
+            </div>
+        </section>
+
         <section class="movie-row">
             <h2>Tendências da Semana</h2>
             <div class="row-container" id="trending-row">

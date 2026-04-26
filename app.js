@@ -8,7 +8,8 @@ const endpoints = {
     trending: `${BASE_URL}/trending/movie/week?language=pt-BR`,
     topRated: `${BASE_URL}/movie/top_rated?language=pt-BR`,
     action: `${BASE_URL}/discover/movie?with_genres=28&language=pt-BR`,
-    scifi: `${BASE_URL}/discover/movie?with_genres=878&language=pt-BR`
+    scifi: `${BASE_URL}/discover/movie?with_genres=878&language=pt-BR`,
+    search: `${BASE_URL}/search/movie?language=pt-BR&include_adult=false`
 };
 
 const options = {
@@ -101,6 +102,65 @@ async function renderRows() {
             card.addEventListener('click', () => openModal(movie));
             container.appendChild(card);
         });
+    }
+}
+
+// Search Logic
+const searchInput = document.getElementById('search-input');
+const searchBtn = document.getElementById('search-btn');
+const searchResultsSection = document.getElementById('search-results-section');
+const searchResultsRow = document.getElementById('search-results-row');
+const searchQueryTitle = document.getElementById('search-query-title');
+
+searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        performSearch(searchInput.value);
+    }
+});
+
+searchBtn.addEventListener('click', () => {
+    performSearch(searchInput.value);
+});
+
+async function performSearch(query) {
+    if (!query || query.trim() === '') {
+        searchResultsSection.style.display = 'none';
+        return;
+    }
+
+    const url = `${endpoints.search}&query=${encodeURIComponent(query)}`;
+    const movies = await fetchMovies(url);
+    
+    searchQueryTitle.textContent = `Resultados para "${query}"`;
+    searchResultsRow.innerHTML = '';
+    
+    if (movies && movies.length > 0) {
+        movies.forEach(movie => {
+            if (!movie.poster_path) return;
+
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            card.style.backgroundImage = `url(${IMAGE_POSTER_URL}${movie.poster_path})`;
+            
+            const rating = (movie.vote_average * 10).toFixed(0);
+            
+            card.innerHTML = `
+                <div class="card-info">
+                    <div class="card-title">${movie.title || movie.name}</div>
+                    <div class="card-rating">
+                        <i class="fa-solid fa-star"></i> ${rating}% Match
+                    </div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => openModal(movie));
+            searchResultsRow.appendChild(card);
+        });
+        searchResultsSection.style.display = 'block';
+        window.scrollTo({ top: searchResultsSection.offsetTop - 100, behavior: 'smooth' });
+    } else {
+        searchQueryTitle.textContent = `Nenhum resultado encontrado para "${query}"`;
+        searchResultsSection.style.display = 'block';
     }
 }
 

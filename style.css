@@ -112,6 +112,44 @@ body {
     border-color: var(--accent);
 }
 
+/* Search Bar */
+.search-container {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.search-container:focus-within {
+    border-color: var(--text-primary);
+    background: #000;
+}
+
+.search-container input {
+    background: transparent;
+    border: none;
+    color: white;
+    outline: none;
+    width: 0;
+    transition: width 0.4s ease;
+    font-size: 14px;
+}
+
+.search-container:hover input, 
+.search-container input:focus,
+.search-container input:not(:placeholder-shown) {
+    width: 200px;
+    margin-right: 10px;
+}
+
+.results-grid {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
 /* Hero Section */
 .hero {
     position: relative;
