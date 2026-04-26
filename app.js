@@ -207,44 +207,27 @@ window.addEventListener('click', (e) => {
     }
 });
 
-modalPlayBtn.addEventListener('click', playTrailer);
+modalPlayBtn.addEventListener('click', playContent);
 
-async function playTrailer() {
+async function playContent() {
     if (!currentMovieId) return;
     
-    // Check if the current title is a movie or tv show
     const type = currentMovieType || 'movie';
-    
-    try {
-        let res = await fetch(`${BASE_URL}/${type}/${currentMovieId}/videos?language=pt-BR`, options);
-        let data = await res.json();
-        let videos = data.results;
-        
-        if (!videos || videos.length === 0) {
-            res = await fetch(`${BASE_URL}/${type}/${currentMovieId}/videos`, options);
-            data = await res.json();
-            videos = data.results;
-        }
+    let embedUrl = "";
 
-        if (videos && videos.length > 0) {
-            const trailer = videos.find(v => v.type === 'Trailer' && v.site === 'YouTube') || videos.find(v => v.site === 'YouTube');
-            
-            if (trailer) {
-                videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${trailer.key}?autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
-                videoModal.style.display = 'block';
-                setTimeout(() => {
-                    videoModal.classList.add('active');
-                }, 10);
-            } else {
-                alert('Trailer não disponível.');
-            }
-        } else {
-            alert('Trailer não disponível.');
-        }
-    } catch (e) {
-        console.error("Error fetching trailer:", e);
-        alert('Erro ao carregar o trailer.');
+    if (type === 'movie') {
+        embedUrl = `https://vidsrc.to/embed/movie/${currentMovieId}`;
+    } else {
+        const season = document.getElementById('season-select').value || 1;
+        const episode = window.currentEpisodeNumber || 1;
+        embedUrl = `https://vidsrc.to/embed/tv/${currentMovieId}/${season}/${episode}`;
     }
+
+    videoContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+    videoModal.style.display = 'block';
+    setTimeout(() => {
+        videoModal.classList.add('active');
+    }, 10);
 }
 
 let currentMovieType = 'movie';
@@ -352,9 +335,8 @@ async function loadEpisodes(seriesId, seasonNumber) {
                 `;
 
                 epItem.onclick = () => {
-                    // Logic to play specific episode trailer/video if available
-                    // For now, let's just trigger the main trailer play logic
-                    playTrailer();
+                    window.currentEpisodeNumber = episode.episode_number;
+                    playContent();
                 };
                 
                 episodesList.appendChild(epItem);
