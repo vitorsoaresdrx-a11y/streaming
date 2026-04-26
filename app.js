@@ -227,12 +227,16 @@ async function playContent(serverType) {
 
     if (serverType === 'warez') {
         embedUrl = type === 'movie' 
-            ? `https://embed.warezcdn.com/movie/${currentMovieId}`
-            : `https://embed.warezcdn.com/tv/${currentMovieId}/${season}/${episode}`;
+            ? `https://embed.warezcdn.top/movie/${currentMovieId}`
+            : `https://embed.warezcdn.top/tv/${currentMovieId}/${season}/${episode}`;
     } else if (serverType === 'embedsu') {
         embedUrl = type === 'movie'
             ? `https://embed.su/embed/movie/${currentMovieId}`
             : `https://embed.su/embed/tv/${currentMovieId}/${season}/${episode}`;
+    } else if (serverType === 'super') {
+        embedUrl = type === 'movie'
+            ? `https://multiembed.mov/?video_id=${currentMovieId}&tmdb=1`
+            : `https://multiembed.mov/?video_id=${currentMovieId}&tmdb=1&s=${season}&e=${episode}`;
     } else if (serverType === 'vidsrc') {
         embedUrl = type === 'movie'
             ? `https://vidsrc.me/embed/movie?tmdb=${currentMovieId}&lang=pt`
