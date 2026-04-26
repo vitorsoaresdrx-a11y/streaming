@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamVibe - O Seu Portal de Filmes</title>
+    <meta name="description" content="Assista aos melhores filmes, séries e tendências de graça.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-play"></i> Stream<span>Vibe</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Início</a></li>
+            <li><a href="#">Séries</a></li>
+            <li><a href="#">Filmes</a></li>
+            <li><a href="#">Bombando</a></li>
+            <li><a href="#">Minha Lista</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="icon-btn"><i class="fa-solid fa-search"></i></button>
+            <button class="icon-btn"><i class="fa-solid fa-bell"></i></button>
+            <div class="avatar"><img src="https://ui-avatars.com/api/?name=User&background=6C5CE7&color=fff" alt="User"></div>
+        </div>
+    </nav>
+
+    <header class="hero" id="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 id="hero-title" class="skeleton-text skeleton">Carregando...</h1>
+            <p id="hero-overview" class="skeleton-text skeleton"></p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary"><i class="fa-solid fa-play"></i> Assistir</button>
+                <button class="btn btn-secondary"><i class="fa-solid fa-plus"></i> Minha Lista</button>
+                <button class="btn btn-icon"><i class="fa-solid fa-info-circle"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main class="content">
+        <section class="movie-row">
+            <h2>Tendências da Semana</h2>
+            <div class="row-container" id="trending-row">
+                <!-- Skeleton cards for loading -->
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+            </div>
+        </section>
+
+        <section class="movie-row">
+            <h2>Aclamados pela Crítica</h2>
+            <div class="row-container" id="top-rated-row">
+                <!-- Skeleton cards for loading -->
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+            </div>
+        </section>
+
+        <section class="movie-row">
+            <h2>Ação e Aventura</h2>
+            <div class="row-container" id="action-row">
+                <!-- Skeleton cards for loading -->
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+            </div>
+        </section>
+        
+        <section class="movie-row">
+            <h2>Ficção Científica</h2>
+            <div class="row-container" id="scifi-row">
+                <!-- Skeleton cards for loading -->
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+                <div class="movie-card skeleton"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for movie details -->
+    <div class="modal" id="movie-modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-hero" id="modal-hero">
+                <div class="modal-overlay"></div>
+                <button class="btn btn-primary modal-play"><i class="fa-solid fa-play"></i> Assistir Agora</button>
+            </div>
+            <div class="modal-info">
+                <h2 id="modal-title"></h2>
+                <div class="modal-meta">
+                    <span class="match" id="modal-rating"></span>
+                    <span class="year" id="modal-year"></span>
+                    <span class="duration">HD</span>
+                </div>
+                <p id="modal-overview"></p>
+                <div class="modal-genres" id="modal-genres"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>StreamVibe &copy; 2026. Criado com a API do TMDB.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
